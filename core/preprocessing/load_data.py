@@ -1,13 +1,18 @@
 import kosh
 import numpy as np
 from mpi4py import MPI
+import PolyFlow.utils.convert_file_to_h5
+
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 
 
 """
-load microstructure data from a single ensemble of SVEs
+Load microstructure data from a single ensemble of SVEs
+into a Kosh store. This promotes organization and good
+documentation practice during development of machine learning 
+models in the context of microscale fatigue.
 
 """
 
@@ -21,7 +26,8 @@ def main():
     parser.add_argument('--ensemble_metdata', default={})
     parser.add_argument('--sve_metadata', default={})
     parser.add_argument('--sve_naming_convention', default='sve_')
-    parser.add_argument('--ensemble_size')
+    parser.add_argument('--ensemble_size', required=True)
+    parser.add_argument('--features', default=[])
 
     store_path              = args.store_path
     microstructure_data_dir = args.microstructure_data_dir
@@ -32,6 +38,7 @@ def main():
     ensemble_metadata       = args.ensemble_metadata
     sve_naming_convention   = args.sve_naming_convention
     ensemble_size           = args.ensemble_size
+    features                = args.features
 
     print(f'Building Kosh store @ {store_path}')
     #
@@ -69,11 +76,13 @@ def main():
     if convert_to_h5:
         # Make sure that the current data format has also been specified
         msg  = 'Conversion of data to h5 triggered but --current_data_format '
-        msg += 'not specificed.'
-        assert current_data_format, msg
+        msg += 'and/or --features not specificed.'
+        assert features and current_data_format, msg
 
-        # Convert microstructure data to h5
-        ##CONVERSION UTILITY##
+        print('Converting sve files to .hdf5 format')
+        for f in os.listdir(microstructure_data_dir):
+            # Convert microstructure data to h5
+            convert_file_to_h5(f, features)
 
     #
     # Store data in Kosh store with proper metadata 
