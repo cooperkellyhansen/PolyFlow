@@ -1,0 +1,3 @@
+[submodule "PyTexture"]
+	path = PyTexture
+	url = git@github.com:cooperkellyhansen/PyTexture.git
