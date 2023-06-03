@@ -14,6 +14,9 @@ into a Kosh store. This promotes organization and good
 documentation practice during development of machine learning 
 models in the context of microscale fatigue.
 
+This also represents the first access point to SVE data. Here
+the data is in its 'raw' state or unprocessed state.
+
 """
 
 def main():
@@ -25,7 +28,6 @@ def main():
                         choices=['csv', 'txt', 'npy'])
     parser.add_argument('--ensemble_metdata', default={})
     parser.add_argument('--sve_metadata', default={})
-    parser.add_argument('--sve_naming_convention', default='sve_')
     parser.add_argument('--ensemble_size', required=True)
     parser.add_argument('--features', default=[])
 
@@ -36,7 +38,6 @@ def main():
     current_data_format     = args.current_data_format
     sve_metadata            = args.microstructure_metadata
     ensemble_metadata       = args.ensemble_metadata
-    sve_naming_convention   = args.sve_naming_convention
     ensemble_size           = args.ensemble_size
     features                = args.features
 
@@ -87,7 +88,7 @@ def main():
     #
     # Store data in Kosh store with proper metadata 
     #
-    ens = store.create_ensemble(name='', metadata=ensemble_metadata)
+    ens = store.create_ensemble(name='SVE Ensemble', metadata=ensemble_metadata)
     for sve_num, sve_file in enumerate(sve_filenames):
         # Parse sve metadata
 
@@ -95,17 +96,23 @@ def main():
         metadata = {'ds_tag': DatasetEnum.SVE.name, **sve_metadata}
         
         # Create datasets and associate
-        ds = kosh.create('_'.join([sve_naming_convention, sve_num]), 
+        ds = kosh.create(''.join(['sve_', sve_num]), 
                          mime_type = 'hdf5',
                          metadata=metadata)
         ds.associate(sve_file)
+    #
+    # Cache ensemble id for quick reference
+    #
+    with open('sve_ensemble_id', 'w') as f:
+        f.write(ens.id)
+
 
     #
     # Summary
     #
     load_data_report  = 'Load data report: \n'
     load_data_report += f'Number of SVEs loaded {ensemble_size}\n'
-    load_data_report += f'Ensemble id {}\n'
+    load_data_report += f'Ensemble id {ens.id}\n'
 
 
 if __name__ == '__main__':
