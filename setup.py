@@ -3,9 +3,9 @@ from setuptools import find_packages
 import glob
 
 data_files   = glob.glob('PolyFlow/config/*')
-data_files  += glob.glob('PolyFlow/studies/*')
+data_files  += glob.glob('PolyFlow/blueprints/*')
 
-setup(name='PolyFlow', 
+setup(name='polyflow', 
       description='Toolkit for developing microscale fatigue surrogate models',
       classifiers=[
                     'Programming Language :: Python :: 3.11.0'
@@ -22,7 +22,8 @@ setup(name='PolyFlow',
                         'patool',
                         'pyunpack',
                         'h5py',
-                        'kosh'],
+                        'kosh',
+                        'bingo-nasa'],
       entry_points = {
           'console_scripts' : ['PolyFlow=PolyFlow.CLI:start_cli']
           },
