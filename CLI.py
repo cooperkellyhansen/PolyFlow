@@ -138,7 +138,7 @@ class PolyFlow_CLI():
             shutil.copy(config_path, new_config_file)
         else:
             entries = ['store_path'] + args.mode
-            blueprint_data = load_yaml(config_path) ###########
+            blueprint_data = load_yaml(config_path)
             requested_data = {k: blueprint_data[k] for k in entries}
             dump_yaml(data=requested_data, filename=new_config_file)
 

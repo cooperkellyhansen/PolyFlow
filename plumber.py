@@ -1,3 +1,7 @@
+import os
+import yaml
+import posix.Path as Path
+
 """
 The 'plumber' is a collection of tools to help the workflow
 run smoothly. Some validations are also done here.
@@ -79,12 +83,58 @@ def resolve_path(fname, as_str=True):
     else:
        return Path(fname).resolve()
 
-def validate_is_yaml():
-        
+def validate_is_yaml(fname):
+    """
+    Confirm that a given file is actually a yaml file
+
+    Parameters:
+    -----------
+    fname: str
+        string path to a yaml file
+    """
+    #Split with os
+    ext = os.path.splitext(fname)[-1].lower()
+    if ext == '.yaml':
+        return True
+    else:
+        return False
+
 def validate_is_file():
+    """
+    Confirm that a given fname is actually a file
+    in the file system
+
+    Parameters:
+    -----------
+    fname: str
+        string path to a file
+    """
+    exists = os.path.isfile(fname)
+    return exists
 
 def validate_is_store():
+    """
+    Confirm that a given store path exists and
+    is a kosh store
+
+    Parameters:
+    -----------
+    fname: str
+        string path to a kosh store
+    """
+    exists = os.path.isfile(fname)
+    ext = os.path.splittest(fname)[-1].lower()
+    
+    if exists and ext == '.sql'
+        return True
+    else:
+        return False
 
 def validate_user_config_file():
+    """
+    Confirm that a user config file meets
+    PolyFlow requirements
+
+    """
 
 
