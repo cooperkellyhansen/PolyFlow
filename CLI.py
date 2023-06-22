@@ -132,7 +132,7 @@ class PolyFlow_CLI():
         config_path = ######
         new_config_file = args.config_file
 
-        if not validate_is_yaml(new_config_file): #########
+        if not validate_is_yaml(new_config_file):
             new_config_file = '.'.join([new_config_file, 'yaml'])
         if 'all' in args.mode:
             shutil.copy(config_path, new_config_file)
@@ -169,12 +169,10 @@ class PolyFlow_CLI():
         store_path  = validated['store_path']
 
         store = kosh.connect(store=store_path)
-        coordinator.validate_kosh_store(store=store) #############
+        coordinator.validate_kosh_store(store=store)
         
         valve_control.Preprocess(config_data=validated, cli_args=args, env=os_env).run()
         
-
-
 def start_cli():
     """
     CLI entry point called in setup.py

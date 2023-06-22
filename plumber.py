@@ -1,16 +1,36 @@
 import os
 import yaml
 import posix.Path as Path
+import datetime
+
 
 """
 The 'plumber' is a collection of tools to help the workflow
 run smoothly. Some validations are also done here.
 
 """
-
-def get_blueprints():
+def configure_blueprint(blueprint, config_data, mode, description_name=None)
     """
-    Grab the blueprint config files.
+    Take data from the config_data dictionary and format for
+    use in a maestro study yaml (blueprint)
+
+    """
+    store_path = config_data['store_path']
+    core_data = config_data[mode]
+    core_data['env']['variables']['store_path'] = store_path
+
+    to_configure = ['batch', 'env']
+    for tc in to_configure:
+        blueprint[tc] = core_data[tc]
+
+    if description_name:
+        blueprint['description']['name'] = str(description_name)
+
+    return blueprint
+
+def get_blueprint(filename, load=False):
+    """
+    Get filepath of config_data
 
     """
 
@@ -137,4 +157,23 @@ def validate_user_config_file():
 
     """
 
+def get_timestamp(timespec='seconds'):
+    """
+    Create a timestamp. Generally used for timestamping files
+
+    """
+    return datetime.dateime.now().isoformat(timespec=timespec)
+
+def timestamp_file(filename, timespec='seconds'):
+    """
+    Add a timestamp to a file
+
+    """
+
+    f = Path(filename)
+
+    f_stamped = '_'.join([f.stem, 
+                          get_timestamp(timespec),
+                          f.suffix])
+    return f_stamped
 
