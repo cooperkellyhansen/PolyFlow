@@ -2,7 +2,7 @@ import os
 import yaml
 import posix.Path as Path
 import datetime
-
+from foreman.schemas import user_config_schema, Schema
 
 """
 The 'plumber' is a collection of tools to help the workflow
@@ -150,12 +150,40 @@ def validate_is_store():
     else:
         return False
 
-def validate_user_config_file():
+def validate_user_config_file(config_file, mode='all', ignore_extra_keys=True):
     """
     Confirm that a user config file meets
     PolyFlow requirements
 
     """
+    # Ensure that file exists
+    if not validate_is_file(config_file):
+        print('Config file not found')
+        sys.exit(1)
+
+    # Ensure that file is yaml
+    if not validate_is_yaml(config_file):
+        print('Config file must be a yaml file')
+        sys.exit(1)
+
+    config_data = load_yaml(config_file)
+
+    if mode == 'all':
+        test_schema = {**user_config_schema}
+    elif user_config_schema.get(mode, False):
+        test_schema = {mode: user_config_schema[mode]}
+    else:
+        print(f'Mode argument {mode} not valid')
+
+    if not 'store_path' in test_schema:
+        test_schema = {
+            'store_path': user_config_schema['store_path'],
+            **test_schema}
+    
+    config_schema = Schema(test_schema, ignore_extra_keys=ignore_extra_keys)
+    validated_config_data = config_schema.validate(config_data)
+
+    return validated_config_data
 
 def get_timestamp(timespec='seconds'):
     """

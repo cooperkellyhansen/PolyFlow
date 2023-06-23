@@ -112,6 +112,12 @@ class Preprocess(ValveControl):
     Run the preprocessing study
 
     """
+    def __init__(self, config_data, cli_args, env=None):
+        store_path = config_data['store_path']
+        config_vars = config_data['generate_data']['env']['variables']
+        env = env
+
+        store = plumber
 
 class Train(ValveControl):
     """
