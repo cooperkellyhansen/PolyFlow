@@ -1,0 +1,28 @@
+store_path: store.sql
+preprocessing:
+    batch:    
+        type: slurm
+        queue: ''
+        host: ''
+        bank: ''
+
+    env: 
+        variables:
+            #
+            # Preprocessing step variables
+            #
+            # load_data.py
+            procs: 1
+            nodes: 1
+            walltime: "24:00:00"
+            microstructure_data_dir: /path/to/microstructure_data_dir
+            convert_to_h5: False
+            ensemble_metadata: {}
+            sve_metadata: {}
+            ensemble_size: 0
+            features: []
+            # validate_data.py
+
+            
+
+    

@@ -1,0 +1,30 @@
+description: 
+    name: polyflow_preprocessing_step
+    description: A study to load dream.3d data into kosh and validate
+
+study:
+    - name: load_data
+      description: load clean dream3d data into kosh
+      run: #
+        cmd: |
+            python PolyFlow.flow.preprocessing.load_data.py \
+                --store_path $(store_path) \
+                --microstructure_data_dir $(microstructure_data_dir) \
+                --convert_to_h5 $(convert_to_h5) \
+                --sve_metadata $(sve_metadata) \
+                --ensemble_metadata $(ensemble_metadata) \
+                --ensemble_size $(ensemble_size) \
+                --features $(features)
+        nodes: 1
+        procs: 1
+        walltime: $(walltime)
+            
+                # args
+    #- name: validate_data
+    #  description: validate dream3d orientation data using PyTexture
+    #  run: #
+    #    cmd: 
+    #        python Polyflow.flow.preprocessing.validate_data.py
+    #            #args
+
+    
