@@ -1,10 +1,10 @@
 import os
-os_env = os.eviron.copy()
+os_env = os.environ.copy()
 import argparse
 import sys
 import shutil
-import foreman.ValveControl as ValveControl
-import plumber
+import polyflow.foreman.ValveControl as ValveControl
+import polyflow.plumber
 
 class PolyFlow_CLI():
     """
@@ -24,52 +24,52 @@ class PolyFlow_CLI():
 
         self.dispatch_command(args)
      
-     def configure_parser(self, description):
-         """
-         Setup internal CLI using argparser
+    def configure_parser(self, description):
+        """
+        Setup internal CLI using argparser
 
-         """
+        """
 
-         #
-         # Parent parser
-         #
-         parentp = argparse.ArgumentParser(prog='PolyFlow',
+        #
+        # Parent parser
+        #
+        parentp = argparse.ArgumentParser(prog='polyflow',
                                            description=description,
                                            epilog='')
-         parentp.set_defaults(parser-core)
+        parentp.set_defaults(parser-core)
 
-         #
-         # Child subparser group
-         #
-         childp = core.add_subparsers(dest='command')
+        #
+        # Child subparser group
+        #
+        childp = core.add_subparsers(dest='command')
 
-         #
-         # 'setup' command subparser
-         #
-         setup_parser = childp.add_parser('setup', help='Setup option for PolyFlow')
-         setup_parser.add_argument('--mode', '-m', choices = ['all', 'preprocessing', 'training', 'inference'])
-         setup_parser.set_defaults(parser=setup_parser)
+        #
+        # 'setup' command subparser
+        #
+        setup_parser = childp.add_parser('setup', help='Setup option for PolyFlow')
+        setup_parser.add_argument('--mode', '-m', choices = ['all', 'preprocessing', 'training', 'inference'])
+        setup_parser.set_defaults(parser=setup_parser)
 
-         #
-         # 'run' command subparser
-         #
-         run_parser = childp.add_parser('run', help='Run a specified step in PolyFlow')
-         run_parser.set_defaults(parser=run_parser)
+        #
+        # 'run' command subparser
+        #
+        run_parser = childp.add_parser('run', help='Run a specified step in PolyFlow')
+        run_parser.set_defaults(parser=run_parser)
          
-         # setup step commands
-         run_subparser = run_parser.add_subparsers(dest='command')
+        # setup step commands
+        run_subparser = run_parser.add_subparsers(dest='command')
 
-         # Preprocess
-         preprocess_parser = run_subparser.add_parser('preprocess', 
+        # Preprocess
+        preprocess_parser = run_subparser.add_parser('preprocess', 
                              help='Execute preprocessing step of PolyFlow')
-         # Train
-         train_parser = run_subparser.add_parser('train', 
+        # Train
+        train_parser = run_subparser.add_parser('train', 
                         help='Execute model training step of PolyFlow')
-         # Add train options
-         train_parser.add_argument('--use_feat', help='Use FEAT to create seeds for Bingo')
+        # Add train options
+        train_parser.add_argument('--use_feat', help='Use FEAT to create seeds for Bingo')
 
-         #Inference
-         inf_parser = run_subparser.add_parser('inference', 
+        #Inference
+        inf_parser = run_subparser.add_parser('inference', 
                       help='Execute inference step of PolyFlow')
 
         for parser in [preprocess_parser, train_parser, inf_parser]:
@@ -126,7 +126,7 @@ class PolyFlow_CLI():
             args.parser.print_help()
             sys.exit(1)
 
-        config_path = ######
+        config_path = 'PolyFlow/foreman/blueprints/default_configuration.yaml'
         new_config_file = args.config_file
 
         if not plumber.validate_is_yaml(new_config_file):
@@ -139,7 +139,7 @@ class PolyFlow_CLI():
             requested_data = {k: blueprint_data[k] for k in entries}
             plumber.dump_yaml(data=requested_data, filename=new_config_file)
 
-        msg  = f'Default config file generated @ '{new_config_file}'.'
+        msg  = f'Default config file generated @{new_config_file}.'
         msg += f'Edit this file to fit your needs.'
 
         print(msg)
@@ -155,7 +155,7 @@ class PolyFlow_CLI():
 
         """
 
-        if not getattr(args, 'config_file', False)
+        if not getattr(args, 'config_file', False):
             args.parser.print_help()
             sys.exit(1)
 
