@@ -1,0 +1,11 @@
+tensorflow
+scipy
+numpy
+scikit-learn
+maestrowf
+schema
+patool
+pyunpack
+h5py
+kosh
+bingo-nasa

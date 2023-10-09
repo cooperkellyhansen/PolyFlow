@@ -1,0 +1,3 @@
+[console_scripts]
+PolyFlow = PolyFlow.CLI:start_cli
+

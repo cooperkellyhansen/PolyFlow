@@ -24,7 +24,7 @@ setup(name='polyflow',
                         'kosh',
                         'bingo-nasa'],
       entry_points = {
-          'console_scripts' : ['PolyFlow=CLI:start_cli']
+          'console_scripts' : ['polyflow=CLI:start_cli']
           },
           data_files=[('polyflow', data_files)],
           include_package_data=True,

@@ -33,6 +33,11 @@ def get_blueprint(filename, load=False):
     Get filepath of config_data
 
     """
+    #TODO: are we returning a dictionary here?
+
+     
+
+    return blueprint
 
 def load_from_yaml(fname, mode='r', from_str=False):
     """

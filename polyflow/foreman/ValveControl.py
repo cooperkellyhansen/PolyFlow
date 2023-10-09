@@ -10,8 +10,6 @@ import os
 from pathlib import Path
 import subprocess
 import polyflow.plumber as plumber
-            
-# TODO: I think there are more here
 
 class ValveControl(ABC):
     """
@@ -79,8 +77,7 @@ class ValveControl(ABC):
         Maestro study templates found in 'foreman/blueprints'
 
         """
-        blueprint = plumber.get_blueprint(blueprint_name,
-                                          True)
+        blueprint = plumber.get_blueprint(blueprint_name,  True)
         revised_blueprint = plumber.configure_blueprint(blueprint,
                                                         config_data,
                                                         mode,
