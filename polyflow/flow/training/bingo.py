@@ -26,9 +26,6 @@ from research.GenerateSeeds import SubgraphSeedGenerator
 
 def main():
     
-    parser = argparser.ArgumentParser()
-    parser.add_argument('--store_path', required=True)
-
     #
     # Open Kosh store
     #
@@ -79,7 +76,7 @@ def main():
 
         # you'll probably have to tune these probabilities/load statements
         # to you particular problem
- component_generator = ComponentGenerator(x.shape[1],
+        component_generator = ComponentGenerator(x.shape[1],
                                              terminal_probability=0.1,
                                              operator_probability=0.7,
                                              equation_probability=0.2,
@@ -92,16 +89,10 @@ def main():
     component_generator.add_operator("log")
     component_generator.add_operator("sqrt")
 
-    #using grain_data_A_soa.csv
-    #component_generator.add_equation('-17.6929 - 0.00*(0.0070*(0.9929*(0.3111*x_6/0.5529*x_4) - 0.1987*log(0.6411*x_5))*(0.0266*(0.1155*x_4*x_4)/0.1672*log(0.6558*x_8))) - 2.89*exp(0.2032*(0.1037*log(0
-
-    #eq = '-17.6929 - 0.00*(0.0070*(0.9929*(0.3111*x_6/0.5529*x_4) - 0.1987*log(0.6411*x_5))*(0.0266*(0.1155*x_4*x_4)/0.1672*log(0.6558*x_8))) - 2.89*exp(0.2032*(0.1037*log(0.0889*x_0) + 1.4393*log(0.13    #eq = AGraph(equation=eq)
-    #seeds = SubgraphSeedGenerator.get_seed_strs(eq.command_array)
-    #for seed in seeds:
-    #    component_generator.add_equation(seed)
-
     #using grain_data_A_soa.csv with E11
-    eq = '-17.6929 - 0.00*(0.0070*(0.9929*(0.3111*x_6/0.5529*x_4) - 0.1987*log(0.6411*x_5))*(0.0266*(0.1155*x_4*x_4)/0.1672*log(0.6558*x_8))) - 2.89*exp(0.2032*(0.1037*log(0.0889*x_0) + 1.4393*log(0.137    component_generator.add_equation(eq)
+    eq = '-17.6929 - 0.00*(0.0070*(0.9929*(0.3111*x_6/0.5529*x_4) - 0.1987*log(0.6411*x_5))*(0.0266*(0.1155*x_4*x_4)/0.1672*log(0.6558*x_8))) - 2.89*exp(0.2032*(0.1037*log(0.0889*x_0) + 1.4393*log(0.137)'    
+
+    component_generator.add_equation(eq)
 
     eq = AGraph(equation=eq)
     seeds = SubgraphSeedGenerator.get_seed_strs(eq.command_array)

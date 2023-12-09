@@ -4,15 +4,38 @@ args are not required and a default Bingo model will be run if
 none specified.
 
 """
+# Ignoring some linting rules in tests
+# pylint: disable=redefined-outer-name
+# pylint: disable=missing-docstring
+import random
+import numpy as np
+import sympy
+from mpi4py import MPI
+
+# Bingo imports for customizable version
+from bingo.evolutionary_algorithms.age_fitness import AgeFitnessEA
+from bingo.evolutionary_optimizers.serial_archipelago import SerialArchipelago
+from bingo.evolutionary_optimizers.parallel_archipelago import ParallelArchipelago
+from bingo.evaluation.evaluation import Evaluation
+from bingo.evolutionary_optimizers.island import Island
+from bingo.local_optimizers.continuous_local_opt import ContinuousLocalOptimization
+from bingo.local_optimizers.local_opt_fitness import LocalOptFitnessFunction
+from bingo.local_optimizers.scipy_optimizer import ScipyOptimizer
+from bingo.symbolic_regression.agraph.agraph import AGraph
+from bingo.symbolic_regression.agraph.component_generator import ComponentGenerator
+from bingo.symbolic_regression import AGraphGenerator, AGraphCrossover, AGraphMutation, ExplicitRegression, ExplicitTrainingData
+from bingo.stats.pareto_front import ParetoFront
+# Seed generator
+from research.GenerateSeeds import SubgraphSeedGenerator
+# For 'nofuss' implementation
 from bingo.symbolic_regression.symbolic_regressor import SymbolicRegressor
-from bingo.evolutionary_algorithms.age_fitness import AgeFitnessEA 
 
 def main():
     parser = argparser.ArgumentParser()
     parser.add_argument('--store_path', required=True)
     parser.add_argument('--population_size', default=500)
     parser.add_argument('--stack_size', default=32)
-    parser.add_argument('--operators', default=None)
+    parser.add_argument('--operators', type=list, default=None)
     parser.add_argument('--use_simplification', default=False)
     parser.add_argument('--crossover_prob', default=0.4)
     parser.add_argument('--mutation_prob', default=0.4)
@@ -106,11 +129,95 @@ def main():
 
     else:
 
-
-
+        #
+        # Instantiate explicit training data
+        #
+        training_data = ExplicitTrainingData(features, labels)
 
         #
-        # Cache Pareto front
+        # Build component generator
+        # FIXME: These should probably exist in the config file
+        component_generator = ComponentGenerator(
+                                features.shape[1],
+                                terminal_probability        = 0.1,
+                                operator_probability        = 0.7,
+                                equation_probability        = 0.2,
+                                num_initial_load_statements = 3)
         #
+        # Add operators
+        # FIXME: add in all possible operators
+        possible_operators = ['+']
+        for op in operators:
+            msg = f'Operator {op} not a valid operator'
+            assert op in possible_operators
+            component_generator.add_operator(op)
+        
+        #
+        # Conduct seeding if toggled
+        #
+        if seed:
+            eq
+            # Transform to agraph
+            eq = AGraph(equation=eq)
+            # Use built-in seed generator to get seed strings
+            seeds = SubgraphSeedGenerator.get_seed_strs(eq.command_array)
+            # Add seeds to component generator
+            for seed in seeds:
+                component_generator.add_equation(seed)i
+        
+
+        #
+        # Build agrapg generator
+        #
+        agraph_generator = AGraphGenerator(
+                            stack_size          = stack_size, 
+                            component_generator = component_generator,
+                             use_simplification  = use_simplification)
+        
+        #
+        # Set up crossover and mutation
+        #
+        crossover = AGraphCrossover()
+        mutation  = AGraphMutation(component_generator)
+    
+        #
+        # Set up fitness
+        # NOTE: We only support explicity regression right now
+        fitness = ExplicitRegression(
+                    training_data = training_data,
+                    metric        = metric,
+                    relative      = False)
+
+        #local_opt_fitness = ContinuousLocalOptimization(fitness, algorithm='lm')
+        local_opt_fitness = LocalOptFitnessFunction(
+                                fitness = fitness, 
+                                ScipyOptimizer(
+                                    fitness = fitness, 
+                                    method  = clo_alg))
+        evaluator          = Evaluation(local_opt_fitness)
+
+        #
+        # Parse evolutionary algorithm
+        #FIXME: arguments and map completion
+        ea_map = {age_fitness: AgeFitnessEA(),
+                  }
+        ea = AgeFitnessEA(evaluator        = evaluator, 
+                          agraph_generator = agraph_generator, 
+                          crossover        = crossover,
+                          mutation         = mutation, 
+                          crossover_prob   = crossover_prob, 
+                          mutation_prob    = mutation_prob,
+                          population_size  = population_size)
+
+        island = Island(ea, agraph_generator, POP_SIZE)
+
+        pareto_front = ParetoFront(secondary_key=lambda ag: ag.get_complexity(),
+                similarity_function=agraph_similarity)
+
+        archipelago = ParallelArchipelago(island,hall_of_fame=pareto_front)
+        #archipelago = SerialArchipelago(island,hall_of_fame=pareto_front)
+
+        opt_result = archipelago.evolve_until_convergence(MAX_GENERATIONS,
+                                                          FITNESS_THRESHOLD,
 
 
